@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#############################
+# Change settings here
+#############################
+# MTD device / partition to use
+# Be aware that everythin on this device will be
+# deleted without any questions!
+MTD_DEVICE_NUMBER=5
+
+# directory to mount
+MOUNT_DIR=/opt
+# and install applications to
+INSTALL_DIR=${MOUNT_DIR}
+OPKG_INSTALL_DEST_NAME=mobos
+
+# applications to install
+APPS="libqtdeclarative4 ofono mobos-gui"
+
+##############################
+#  You should never need to change the following
+###############################
+MTD_DEVICE=/dev/mtd${MTD_DEVICE_NUMBER}
+MTD_BLOCK_DEVICE=/dev/mtdblock${MTD_DEVICE_NUMBER}
+OPKG_CONFIG=/etc/opkg/opkg.conf
+
+#############################
+# Let's go
+#############################
+# create (and delete) partition
+flash_eraseall --jffs2 ${MTD_DEVICE}
+
+# create and mount dir
+mkdir -p ${MOUNT_DIR}
+mount -t jffs2 ${MTD_BLOCK_DEVICE} ${MOUNT_DIR}
+
+# update package system
+opkg update
+
+# make sure our INSTALL_DIR is configured as a *opkg destination* in opkg.conf
+# TODO: check before add
+echo "dest ${OPKG_INSTALL_DEST_NAME} ${INSTALL_DIR}" >> ${OPKG_CONFIG}
+
+# install all our needed packages to the created partition
+opkg -o ${OPKG_INSTALL_DEST_NAME} install ${APPS}
+
