@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export DISPLAY=:0
+Xfbdev -screen 320x240@90x32 -mouse tslib &
+sleep 3
+xtscal
