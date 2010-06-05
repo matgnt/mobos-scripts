@@ -1,0 +1,10 @@
+#!/bin/sh
+
+export LD_LIBRARY_PATH=/opt/usr/lib:${LD_LIBRARY_PATH}
+export PATH=/opt/usr/bin:${PATH}
+export DISPLAY=:0
+
+Xfbdev -screen 320x240@90x32 -mouse tslib -hide-cursor &
+sleep 3
+
+mobos-gui
