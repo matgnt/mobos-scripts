@@ -14,8 +14,11 @@ MOUNT_DIR=/opt
 INSTALL_DIR=${MOUNT_DIR}
 OPKG_INSTALL_DEST_NAME=mobos
 
-# applications to install
-APPS="libqtdeclarative4 ofono mobos-gui"
+# applications to install - use _MAIN_PARTITION for
+# apps which need access to /etc/*
+APPS_MAIN_PARTITION="ofono"
+# more space for other apps
+APPS="libqtdeclarative4 mobos-gui"
 
 ##############################
 #  You should never need to change the following
@@ -41,6 +44,8 @@ opkg update
 # TODO: check before add
 echo "dest ${OPKG_INSTALL_DEST_NAME} ${INSTALL_DIR}" >> ${OPKG_CONFIG}
 
+# install packages to the main partition
+opkg install ${APPS_MAIN_PARTITION}
 # install all our needed packages to the created partition
 opkg -o ${OPKG_INSTALL_DEST_NAME} install ${APPS}
 
